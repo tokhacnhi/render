@@ -11,7 +11,7 @@ on:
         required: false
 
 jobs:
-  render-video:
+  render-subtitle:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,6 @@ jobs:
       - uses: FedericoCarboni/setup-ffmpeg@v3
         with:
           ffmpeg-version: release
-          cache-hit: true
 
       - run: |
           sudo apt-get update
@@ -30,7 +29,6 @@ jobs:
 
           ffmpeg -y \
             -i video.mp4 \
-            -i audio.mp3 \
             -vf "ass=sub.ass" \
             -c:v libx264 -preset fast -crf 23 \
             out.mp4
