@@ -1,0 +1,45 @@
+name: Render
+
+on:
+  workflow_dispatch:
+    inputs:
+      cmd:
+        description: 'Full FFmpeg command to run'
+        required: true
+        default: 'ffmpeg -y -i input.mp4 -vf "ass=https://example.com/subtitles.ass" -c:v h264_nvenc -preset p3 -cq 23 -c:a copy final.mp4'
+      webhook_url:
+        description: 'Webhook URL to notify'
+        required: false
+
+jobs:
+  render-video:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+        with:
+          ffmpeg-version: release
+          cache-hit: true
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-nanum
+
+      - run: ${{ github.event.inputs.cmd }}
+
+      - name: Setup Rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+            rclone_config: ${{ secrets.RCLONE }}
+      
+    #   - run: rclone copy source:sourcepath dest:destpath
+
+
+    #   # Upload output file to R2
+    #   - run: rclone copy "${{ steps.detect_output.outputs.output_file }}" r2:bucket-name/path/ --progress
+
+    #   # Send webhook notification
+    #   - run: |
+    #       curl -X POST "${{ github.event.inputs.webhook_url }}" \
+    #            -H "Content-Type: application/json" \
+    #            -d '{"file":"'"${{ steps.detect_output.outputs.output_file }}"'","status":"uploaded"}'
