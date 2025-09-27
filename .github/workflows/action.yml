@@ -31,7 +31,7 @@ jobs:
             -i video.mp4 \
             -vf "ass=sub.ass" \
             -c:v libx264 -preset fast -crf 23 \
-            out.mp4
+            output.mp4
 
       - name: Upload output as artifact
         uses: actions/upload-artifact@v4
