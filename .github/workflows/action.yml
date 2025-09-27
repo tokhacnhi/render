@@ -36,7 +36,7 @@ jobs:
             out.mp4
 
       - name: Upload output as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ffmpeg-output
+          name: video-output
           path: output.mp4
