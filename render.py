@@ -54,6 +54,14 @@ def upload_s3(name, filepath):
     
     return f'{dm}/file={response.text}'
 
+def notify(data):
+    WEBHOOK = os.getenv('WEBHOOK')
+    payload = {
+        "status": "done",
+        "data": data
+    }
+    resp = requests.post(WEBHOOK, json=payload)
+
 def run():
     audio_file = 'audio.mp3'
     sub_file = 'sub.txt'
@@ -72,15 +80,10 @@ def run():
 
     concat_audio(concat_file, audio_file, sub_file, 'final.mp4')
 
-    result = upload_s3('final.mp4')
+    path = upload_s3('final.mp4')
 
-    WEBHOOK = os.getenv('WEBHOOK')
-    payload = {
-        "status": "done",
-        "data": result
-    }
-    resp = requests.post(WEBHOOK, json=payload)
+    notify(path)
 
 
 if __name__ == '__main__':
-  run(()
+    run()
