@@ -4,26 +4,18 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      clips:
-        description: 'link zip'
-        required: true
-      subs:
-        description: 'link subtitle'
-        required: false
-      audio:
-        required: true
-      
-      webhook:
-        required: true
 
 jobs:
-  render-subtitle:
+  render:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
+
+      - name: Compute params hash
+        id: hash
+        run: echo "hash=$(sha256sum params.env | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13'
@@ -35,25 +27,22 @@ jobs:
           ffmpeg-version: release
 
       - run: |
-          sudo apt-get update
-          sudo apt-get install -y fonts-nanum
-          
-      - run: |
-          set -a
-          source params.env
-          set +a
+          sudo apt-get install -y fonts-nanum || true
+      
+      - name: Load params
+        run: |
+          run: cat params.env >> $GITHUB_ENV
 
+      - name: Exectute
+        run: |
           wget -O clips.zip "$CLIPS"
           unzip clips.zip -d clips
 
           wget -O sub.txt "$SUBS"
           wget -O audio.mp3 "$AUDIO"
 
-          RESULT=$(python render.py)
+          python render.py
 
-          curl -X POST -H "Content-Type: application/json" \
-            -d "{\"status\": \"done\", \"data\": \"$RESULT\"}" \
-            "$WEBHOOK"
 
 
 
