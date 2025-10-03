@@ -2,6 +2,7 @@ import subprocess
 import math
 import random
 import os
+import fire
 
 def dur(f):
     out = subprocess.check_output((
@@ -72,8 +73,6 @@ def run(webhook):
     concat_audio(concat_file, audio_file, sub_file, 'final.mp4')
 
     return upload_s3('final.mp4')
-
-    
 
 
 if __name__ == '__main__':
