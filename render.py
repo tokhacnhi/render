@@ -3,6 +3,7 @@ import math
 import random
 import os
 import fire
+import requests
 
 def dur(f):
     out = subprocess.check_output((
