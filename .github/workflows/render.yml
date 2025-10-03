@@ -1,0 +1,54 @@
+name: Render
+
+on:
+  workflow_dispatch:
+    inputs:
+      clips:
+        description: 'link zip'
+        required: true
+      subs:
+        description: 'link subtitle'
+        required: false
+      audio:
+        required: true
+      
+      webhook:
+        required: true
+
+jobs:
+  render-subtitle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+        with:
+          ffmpeg-version: release
+
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-nanum
+          
+      - run: |
+          wget -O clips.zip "${{ inputs.clips }}"
+          unzip clips.zip -d clips
+
+          wget -O sub.txt "${{ inputs.subs }}"
+          wget -0 audio.mp3 "${{ inputs.audio }}"
+
+          RESULT=$(python render.py)
+
+          curl -X POST -H "Content-Type: application/json" \
+            -d "{\"status\": \"done\", \"data\": \"$RESULT\"}" \
+            "${{ $inputs.webhook }}"
+
+
+
+
+      
