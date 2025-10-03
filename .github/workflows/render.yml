@@ -39,17 +39,21 @@ jobs:
           sudo apt-get install -y fonts-nanum
           
       - run: |
-          wget -O clips.zip "${{ inputs.clips }}"
+          set -a
+          source params.env
+          set +a
+
+          wget -O clips.zip "$CLIPS"
           unzip clips.zip -d clips
 
-          wget -O sub.txt "${{ inputs.subs }}"
-          wget -0 audio.mp3 "${{ inputs.audio }}"
+          wget -O sub.txt "$SUBS"
+          wget -O audio.mp3 "$AUDIO"
 
           RESULT=$(python render.py)
 
           curl -X POST -H "Content-Type: application/json" \
             -d "{\"status\": \"done\", \"data\": \"$RESULT\"}" \
-            "${{ $inputs.webhook }}"
+            "${{ $WEBHOOK }}"
 
 
 
