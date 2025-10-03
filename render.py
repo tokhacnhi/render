@@ -49,7 +49,7 @@ def concat_audio(video_file, audio_file, sub_file, output):
 def upload_s3(name, filepath):
     dm = 'https://minhvh-tool.hf.space/gradio_api'
     files = {
-        "files": (name, open(file, "rb"))
+        "files": (name, open(filepath, "rb"))
     }
     response = requests.post(f'{dm}/upload', files=files)
     
