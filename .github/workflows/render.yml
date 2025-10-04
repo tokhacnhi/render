@@ -21,9 +21,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Load params
+        run: |
+          set -a
+          source params.env
+          set +a
+      
       - name: Exectute
         run: |
-          cat params.env >> $GITHUB_ENV
           wget -O clips.zip "$CLIPS"
           unzip clips.zip -d clips
 
