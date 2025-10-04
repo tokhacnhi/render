@@ -5,6 +5,8 @@ import os
 import fire
 import requests
 from zipfile import ZipFile
+import json
+
 
 with open("params.json") as f:
     params = json.load(f)
