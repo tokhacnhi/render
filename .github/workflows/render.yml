@@ -21,16 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Compute params hash
-        id: hash
-        run: echo "hash=$(sha256sum params.env | cut -d' ' -f1)" >> $GITHUB_OUTPUT
-
-      - name: Load params
-        run: |
-          run: cat params.env >> $GITHUB_ENV
-
       - name: Exectute
         run: |
+          cat params.env >> $GITHUB_ENV
           wget -O clips.zip "$CLIPS"
           unzip clips.zip -d clips
 
