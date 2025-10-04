@@ -29,27 +29,27 @@ jobs:
           DATA=$(echo "$RAW_JSON" | base64)
           echo "data=$DATA" >> $GITHUB_OUTPUT
 
-notify:
-    runs-on: ubuntu-latest
-    needs: render
-    if: always()
-    steps:
-      - name: Send webhook
-        run: |
-          STATUS="success"
-          if [ "${{ needs.render.result }}" != "success" ]; then
-            STATUS="failure"
-          fi
+  notify:
+      runs-on: ubuntu-latest
+      needs: render
+      if: always()
+      steps:
+        - name: Send webhook
+          run: |
+            STATUS="success"
+            if [ "${{ needs.render.result }}" != "success" ]; then
+              STATUS="failure"
+            fi
 
-          DATA="${{ needs.render.outputs.render_data }}"
-          WEBHOOK="${{ needs.render.outputs.webhook }}"
+            DATA="${{ needs.render.outputs.render_data }}"
+            WEBHOOK="${{ needs.render.outputs.webhook }}"
 
-          DECODED=$(echo "$DATA" | base64 --decode)
+            DECODED=$(echo "$DATA" | base64 --decode)
 
-          curl -X POST -H "Content-Type: application/json" \
-            -d "{\"status\":\"$STATUS\",\"data\":$DECODED}" \
-            "$WEBHOOK"
-          
+            curl -X POST -H "Content-Type: application/json" \
+              -d "{\"status\":\"$STATUS\",\"data\":$DECODED}" \
+              "$WEBHOOK"
+            
 
 
 
