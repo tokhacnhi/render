@@ -29,14 +29,9 @@ jobs:
           set +a
       
       - name: Exectute
-        run: |
-          wget -O clips.zip "$CLIPS"
-          unzip clips.zip -d clips
+        run: python render.py
 
-          wget -O sub.txt "$SUBS"
-          wget -O audio.mp3 "$AUDIO"
-
-          python render.py
+          
 
 
 

@@ -4,6 +4,12 @@ import random
 import os
 import fire
 import requests
+from zipfile import ZipFile
+
+CLIPS = os.getenv("CLIPS")
+AUDIO = os.getenv("AUDIO")
+SUBS = os.getenv("SUBS")
+WEBHOOK = os.getenv('WEBHOOK')
 
 def dur(f):
     out = subprocess.check_output((
@@ -55,8 +61,27 @@ def upload_s3(name, filepath):
     
     return f'{dm}/file={response.text}'
 
+
+def parse_params():
+    if not CLIPS or not AUDIO or not SUBS:
+        raise ValueError("One or more required URLs are missing!")
+    r = requests.get(CLIPS)
+    r.raise_for_status()
+    with open("clips.zip", "wb") as f:
+        f.write(r.content)
+
+    with ZipFile("clips.zip", "r") as zip_ref:
+        zip_ref.extractall("clips")
+
+    # Tải sub và audio
+    for url, out in [(SUBS, "sub.txt"), (AUDIO, "audio.mp3")]:
+        r = requests.get(url)
+        r.raise_for_status()
+        with open(out, "wb") as f:
+            f.write(r.content)
+
+
 def notify(data):
-    WEBHOOK = os.getenv('WEBHOOK')
     payload = {
         "status": "done",
         "data": data
