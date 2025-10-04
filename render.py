@@ -19,6 +19,7 @@ logging.basicConfig(
 with open("params.json") as f:
     params = json.load(f)
 
+logging.info(json.dumps(params, indent=4, ensure_ascii=False))
 
 
 def dur(f):
