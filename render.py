@@ -118,7 +118,6 @@ def load_params():
 
 
 def notify(data):
-    logging.info(f"Sending notification to {WEBHOOK} with data: {data}")
     payload = {"status": "done", "data": data}
     requests.post(WEBHOOK, json=payload)
     
