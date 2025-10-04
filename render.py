@@ -102,10 +102,10 @@ def run():
 
 
     with open(audio_file, "wb") as f:
-        f.write(requests.get(audio_url).content)
+        f.write(requests.get(AUDIO).content)
 
     with open(sub_file, "wb") as f:
-        f.write(requests.get(sub_url).content)
+        f.write(requests.get(SUBS).content)
 
     concat_file = concat_video(files, dur(audio_file), '/tmp')
 
