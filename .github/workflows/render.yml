@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ghcr.io/tokhacnhi/render:latest
+      image: ghcr.io/tokhacnhi/render/render:latest
 
     steps:
       - uses: actions/checkout@v5
