@@ -20,15 +20,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-
-      - name: Load params
-        shell: bash
-        run: |
-          set -a
-          . params.env
-          set +a
-      
-      - name: Exectute
+      - name: run
         run: python render.py
 
           

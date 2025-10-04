@@ -6,10 +6,13 @@ import fire
 import requests
 from zipfile import ZipFile
 
-CLIPS = os.getenv("CLIPS")
-AUDIO = os.getenv("AUDIO")
-SUBS = os.getenv("SUBS")
-WEBHOOK = os.getenv('WEBHOOK')
+with open("params.json") as f:
+    params = json.load(f)
+
+CLIPS = params["CLIPS"]
+AUDIO = params["AUDIO"]
+SUBS = params["SUBS"]
+WEBHOOK = params["WEBHOOK"]
 
 def dur(f):
     out = subprocess.check_output((

@@ -1,0 +1,6 @@
+{
+  "WEBHOOK": "https://minhvh-n8/api/ping",
+  "CLIPS": "https://pub-895f48d491f74fce9ea2eb9acca6341c.r2.dev/videos/nam-bs-001.zip",
+  "AUDIO": "https://minhvh-tool.hf.space/gradio_api/file%3Dtmp/gradio/49f24c3ad9a53edd2f1b7e1e494c4fc35a330e7cd48feab1deea03b12b5a3244/tmpadz98_9m.mp3",
+  "SUBS": "https://minhvh-tool.hf.space/gradio_api/file%3D/tmp/gragra/175f6477994bd52c80fe779f1be5a0c271e46480d6a1ba44e9835fa4b66d3fd1/tmp0ctp56is.txt"
+}
