@@ -24,7 +24,8 @@ jobs:
         run: |
           WEBHOOK=$(jq -r '.webhook' params/render.json)
           echo "webhook=$WEBHOOK" >> $GITHUB_OUTPUT
-
+          echo "WEBHOOK = $WEBHOOK"
+          
           RAW_JSON=$(python render.py)
           DATA=$(echo "$RAW_JSON" | base64)
           echo "data=$DATA" >> $GITHUB_OUTPUT
@@ -42,6 +43,8 @@ jobs:
             fi
 
             WEBHOOK="${{ needs.render.outputs.webhook }}"
+
+            echo 
             DATA="${{ needs.render.outputs.render_data }}"
 
             if [ -n "$DATA" ]; then
@@ -49,6 +52,9 @@ jobs:
             else
               DECODED=""
             fi
+
+            echo "WEBHOOK = ${{ needs.render.outputs.webhook }}"
+            echo "DATA = $DECODED"
 
             curl -X POST -H "Content-Type: application/json" \
               -d "{\"status\":\"$STATUS\",\"data\":$DECODED}" \
