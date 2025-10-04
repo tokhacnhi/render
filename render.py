@@ -77,7 +77,7 @@ def concat_audio(video_file, audio_file, sub_file, output):
 
 
 def upload_s3(name, filepath):
-    logging.info(f"Uploading {filepath} as {name}")
+    logging.info(f"Uploading > {filepath} as {name}")
     dm = 'https://minhvh-tool.hf.space/gradio_api'
     with open(filepath, "rb") as f:
         files = {"files": (name, f)}
@@ -91,12 +91,11 @@ def upload_s3(name, filepath):
 def load_params():
     clips_url = params.get("clips")
 
-    logging.info(f"Downloading {clips_url}")
+    logging.info(f"download < {clips_url}")
     r = requests.get(clips_url)
     r.raise_for_status()
     with open("clips.zip", "wb") as f:
         f.write(r.content)
-    logging.info("Clips downloaded")
 
     with ZipFile("clips.zip", "r") as zip_ref:
         zip_ref.extractall("clips")
@@ -104,7 +103,7 @@ def load_params():
 
     # Download audio and subtitles
     for url, out in [(params.get("subs"), "sub.txt"), (params.get("audio"), "audio.mp3")]:
-        logging.info(f"Downloading {out} from {url}")
+        logging.info(f"download < {url}")
         r = requests.get(url)
         r.raise_for_status()
         with open(out, "wb") as f:
