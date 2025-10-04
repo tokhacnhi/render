@@ -41,10 +41,14 @@ jobs:
               STATUS="failure"
             fi
 
-            DATA="${{ needs.render.outputs.render_data }}"
             WEBHOOK="${{ needs.render.outputs.webhook }}"
+            DATA="${{ needs.render.outputs.render_data }}"
 
-            DECODED=$(echo "$DATA" | base64 --decode)
+            if [ -n "$DATA" ]; then
+              DECODED=$(echo "$DATA" | base64 --decode)
+            else
+              DECODED=""
+            fi
 
             curl -X POST -H "Content-Type: application/json" \
               -d "{\"status\":\"$STATUS\",\"data\":$DECODED}" \
