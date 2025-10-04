@@ -19,6 +19,8 @@ logging.basicConfig(
 with open("params.json") as f:
     params = json.load(f)
 
+
+
 logging.info(json.dumps(params, indent=4, ensure_ascii=False))
 
 
@@ -77,15 +79,12 @@ def concat_audio(video_file, audio_file, sub_file, output):
 
 
 def upload_s3(name, filepath):
-    logging.info(f"Uploading > {filepath} as {name}")
     dm = 'https://minhvh-tool.hf.space/gradio_api'
-    with open(filepath, "rb") as f:
-        files = {"files": (name, f)}
-        response = requests.post(f'{dm}/upload', files=files)
-    response.raise_for_status()
-    url = f'{dm}/file={response.text}'
-    logging.info(f"Uploaded: {url}")
-    return url
+    files = {
+        "files": (name, open(filepath, "rb"))
+    }
+    response = requests.post(f'{dm}/upload', files=files)
+    return f'{dm}/file={response.json()[0]}'
 
 
 def load_params():
