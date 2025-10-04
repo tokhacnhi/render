@@ -62,7 +62,7 @@ def upload_s3(name, filepath):
     return f'{dm}/file={response.text}'
 
 
-def parse_params():
+def load_params():
     if not CLIPS or not AUDIO or not SUBS:
         raise ValueError("One or more required URLs are missing!")
     r = requests.get(CLIPS)
@@ -112,4 +112,5 @@ def run():
 
 
 if __name__ == '__main__':
+    load_params()
     run()
