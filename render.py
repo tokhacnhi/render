@@ -95,7 +95,7 @@ def upload_s3(name, filepath):
         "files": (name, open(filepath, "rb"))
     }
     r = requests.post(f'{dm}/upload', files=files)
-    
+
     return f'{dm}/file={r.json()[0]}'
 
 
@@ -122,11 +122,11 @@ def load_params():
         logging.info(f"{out} downloaded")
 
 
-def notify(data):
-    payload = {"status": "done", "data": data}
-    requests.post(params.get('webhook'), json=payload)
+# def notify(data):
+#     payload = {"status": "done", "data": data}
+#     requests.post(params.get('webhook'), json=payload)
     
-    logging.info("Notification sent")
+#     logging.info("Notification sent")
 
 
 def run():
@@ -143,9 +143,11 @@ def run():
     path = upload_s3('final.mp4', 'final.mp4')
     logging.info(f'output: {path}') 
 
-    notify(path)
-    
     logging.info(f"Total time: {time.time() - start:.2f}s")
+
+    return path
+    # notify(path)
+    
 
 
 if __name__ == '__main__':
