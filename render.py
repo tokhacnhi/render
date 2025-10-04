@@ -8,7 +8,6 @@ import json
 import time
 import logging
 
-# Cấu hình logging
 logging.basicConfig(
     level=logging.DEBUG,  # DEBUG, INFO, WARNING, ERROR, CRITICAL
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -16,8 +15,21 @@ logging.basicConfig(
 )
 
 # Load params
-with open("params.json") as f:
+with open("params/render.json") as f:
     params = json.load(f)
+
+
+def get_ip():
+    try:
+        r = requests.get("http://ip-api.com/json/", timeout=5)
+        data = r.json()
+        r = f"{data.get('query','')} | {data.get('country','')} | {data.get('city','')}"
+        logging.info(f'location: {f}')
+
+        return r
+    except Exception as e:
+        logging.info(f'location: unknown')
+        return None
 
 
 logging.info(json.dumps(params, indent=4, ensure_ascii=False))
@@ -82,8 +94,9 @@ def upload_s3(name, filepath):
     files = {
         "files": (name, open(filepath, "rb"))
     }
-    response = requests.post(f'{dm}/upload', files=files)
-    return f'{dm}/file={response.json()[0]}'
+    r = requests.post(f'{dm}/upload', files=files)
+    
+    return f'{dm}/file={r.json()[0]}'
 
 
 def load_params():
@@ -136,5 +149,6 @@ def run():
 
 
 if __name__ == '__main__':
+    get_ip()
     load_params()
     run()
