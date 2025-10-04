@@ -25,7 +25,7 @@ jobs:
         shell: bash
         run: |
           set -a
-          source params.env
+          . params.env
           set +a
       
       - name: Exectute
