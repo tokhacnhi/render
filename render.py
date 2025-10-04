@@ -136,6 +136,8 @@ def run():
     concat_file = concat_video(files, dur(audio_file), '.')
     concat_audio(concat_file, audio_file, sub_file, 'final.mp4')
     path = upload_s3('final.mp4', 'final.mp4')
+    logging.info(f'output: {path}') 
+    
     notify(path)
     
     logging.info(f"Total time: {time.time() - start:.2f}s")
