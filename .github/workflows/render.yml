@@ -18,9 +18,14 @@ jobs:
     container:
       image: ghcr.io/tokhacnhi/render/render:latest
 
+    outputs:
+      webhook: ${{ steps.task.outputs.webhook }}  # map step output sang job output
+      render_data: ${{ steps.task.outputs.data }}
+      
     steps:
       - uses: actions/checkout@v5
       - name: run
+        id: task
         run: |
           WEBHOOK=$(jq -r '.webhook' params/render.json)
           echo "webhook=$WEBHOOK" >> $GITHUB_OUTPUT
