@@ -1,7 +1,7 @@
 FROM python:3.14-rc-slim
 
 RUN apt-get update && \
-    apt-get install -y wget unzip ffmpeg fonts-nanum && \
+    apt-get install -y wget unzip ffmpeg fonts-nanum jq awk && \
     rm -rf /var/lib/apt/lists/*
 
 
