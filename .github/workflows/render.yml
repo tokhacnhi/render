@@ -21,7 +21,7 @@ jobs:
     outputs:
       webhook: ${{ steps.task.outputs.webhook }}  # map step output sang job output
       render_data: ${{ steps.task.outputs.data }}
-      
+
     steps:
       - uses: actions/checkout@v5
       - name: run
@@ -55,7 +55,7 @@ jobs:
             if [ -n "$DATA" ]; then
               DECODED=$(echo "$DATA" | base64 --decode)
             else
-              DECODED=""
+              DECODED="null"
             fi
 
             echo "WEBHOOK = ${{ needs.render.outputs.webhook }}"
