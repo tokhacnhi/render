@@ -1,4 +1,4 @@
-name: Build Docker
+name: Docker
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  commit:
+  docker:
     runs-on: ubuntu-latest
     permissions:
       packages: write 
