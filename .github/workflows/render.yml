@@ -48,21 +48,12 @@ jobs:
             fi
 
             WEBHOOK="${{ needs.render.outputs.webhook }}"
-
-            echo 
             DATA="${{ needs.render.outputs.render_data }}"
 
-            if [ -n "$DATA" ]; then
-              DECODED=$(echo "$DATA" | base64 --decode)
-            else
-              DECODED="null"
-            fi
-
             echo "WEBHOOK = ${{ needs.render.outputs.webhook }}"
-            echo "DATA = $DECODED"
 
             curl -X POST -H "Content-Type: application/json" \
-              -d "{\"status\":\"$STATUS\",\"data\":$DECODED}" \
+              -d "{\"status\":\"$STATUS\",\"data\": \"$DATA\"}" \
               "$WEBHOOK"
             
 
