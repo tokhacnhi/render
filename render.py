@@ -2,35 +2,51 @@ import subprocess
 import math
 import random
 import os
-import fire
 import requests
 from zipfile import ZipFile
 import json
+import time
+import logging
 
+# Cấu hình logging
+logging.basicConfig(
+    level=logging.DEBUG,  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
+# Load params
 with open("params.json") as f:
     params = json.load(f)
 
-CLIPS = params["CLIPS"]
-AUDIO = params["AUDIO"]
-SUBS = params["SUBS"]
-WEBHOOK = params["WEBHOOK"]
+CLIPS = params.get("CLIPS")
+AUDIO = params.get("AUDIO")
+SUBS = params.get("SUBS")
+WEBHOOK = params.get("WEBHOOK")
+
 
 def dur(f):
+    logging.debug(f"Getting duration of {f}")
     out = subprocess.check_output((
         f'ffprobe -v error -show_entries format=duration '
         f'-of default=noprint_wrappers=1:nokey=1 "{f}"'
     ), shell=True)
-    return float(out.strip())
+    duration = float(out.strip())
+    logging.debug(f"Duration: {duration}")
+    return duration
 
 
 def concat_video(vs: list[str], secs: float, dir: str, shuffle=True):
+    logging.info(f"Concatenating {len(vs)} videos into {dir}/concat.mp4 for {secs} seconds")
     if shuffle:
         random.shuffle(vs)
 
     vdur = sum(dur(v) for v in vs)
+    logging.debug(f"Total video duration: {vdur}")
     rep = math.ceil(secs / vdur)
+    logging.debug(f"Repeating videos {rep} times to reach target duration")
     vs = vs * rep
+
     output = f"{dir}/concat.mp4"
     videos_path = f"{dir}/videos.txt"
 
@@ -39,81 +55,91 @@ def concat_video(vs: list[str], secs: float, dir: str, shuffle=True):
 
     tmp_concat = f"{dir}/tmp_concat.mp4"
 
+    logging.info(f"Running ffmpeg concat")
     subprocess.run((
         f'ffmpeg -y -v error -f concat -safe 0 -i "{videos_path}" -c copy "{tmp_concat}"'
     ), shell=True, check=True)
 
+    logging.info(f"Trimming video to {secs} seconds")
     subprocess.run((
         f'ffmpeg -y -v error -i "{tmp_concat}" -t {secs:.3f} -c copy "{output}"'
     ), shell=True, check=True)
 
+    logging.info(f"Video concatenation done: {output}")
     return output
 
+
 def concat_audio(video_file, audio_file, sub_file, output):
+    logging.info(f"Merging video {video_file} with audio {audio_file} and subtitles {sub_file}")
     subprocess.run((
         f'ffmpeg -y -i "{video_file}" -i "{audio_file}" '
         f'-vf "ass={sub_file}" '
         f'-map 0:v:0 -map 1:a:0 -c:v libx264 -preset veryfast -crf 23 -c:a copy "{output}"'
     ), check=True, shell=True)
+    logging.info(f"Audio concatenation done: {output}")
 
 
 def upload_s3(name, filepath):
+    logging.info(f"Uploading {filepath} as {name}")
     dm = 'https://minhvh-tool.hf.space/gradio_api'
-    files = {
-        "files": (name, open(filepath, "rb"))
-    }
-    response = requests.post(f'{dm}/upload', files=files)
-    
-    return f'{dm}/file={response.text}'
+    with open(filepath, "rb") as f:
+        files = {"files": (name, f)}
+        response = requests.post(f'{dm}/upload', files=files)
+    response.raise_for_status()
+    url = f'{dm}/file={response.text}'
+    logging.info(f"Uploaded: {url}")
+    return url
 
 
 def load_params():
+    logging.info("Loading params and downloading clips/audio/subs")
     if not CLIPS or not AUDIO or not SUBS:
         raise ValueError("One or more required URLs are missing!")
+
+    logging.info(f"Downloading clips from {CLIPS}")
     r = requests.get(CLIPS)
     r.raise_for_status()
     with open("clips.zip", "wb") as f:
         f.write(r.content)
+    logging.info("Clips downloaded")
 
     with ZipFile("clips.zip", "r") as zip_ref:
         zip_ref.extractall("clips")
+    logging.info("Clips extracted")
 
-    # Tải sub và audio
+    # Download audio and subtitles
     for url, out in [(SUBS, "sub.txt"), (AUDIO, "audio.mp3")]:
+        logging.info(f"Downloading {out} from {url}")
         r = requests.get(url)
         r.raise_for_status()
         with open(out, "wb") as f:
             f.write(r.content)
+        logging.info(f"{out} downloaded")
 
 
 def notify(data):
-    payload = {
-        "status": "done",
-        "data": data
-    }
-    resp = requests.post(WEBHOOK, json=payload)
+    logging.info(f"Sending notification to {WEBHOOK} with data: {data}")
+    payload = {"status": "done", "data": data}
+    requests.post(WEBHOOK, json=payload)
+    
+    logging.info("Notification sent")
+
 
 def run():
+    start = time.time()
     audio_file = 'audio.mp3'
     sub_file = 'sub.txt'
     dir = 'clips'
 
     files = [f"{dir}/{e}" for e in os.listdir(dir) if e.lower().endswith(".mp4")]
+    logging.debug(f"Video files: {files}")
 
-
-    with open(audio_file, "wb") as f:
-        f.write(requests.get(AUDIO).content)
-
-    with open(sub_file, "wb") as f:
-        f.write(requests.get(SUBS).content)
-
-    concat_file = concat_video(files, dur(audio_file), '/tmp')
-
+    concat_file = concat_video(files, dur(audio_file), '.')
     concat_audio(concat_file, audio_file, sub_file, 'final.mp4')
-
-    path = upload_s3('final.mp4')
-
+    path = upload_s3('final.mp4', 'final.mp4')
     notify(path)
+    
+    logging.info(f"Total time: {time.time() - start:.2f}s")
 
 
 if __name__ == '__main__':
