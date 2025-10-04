@@ -19,10 +19,6 @@ logging.basicConfig(
 with open("params.json") as f:
     params = json.load(f)
 
-CLIPS = params.get("CLIPS")
-AUDIO = params.get("AUDIO")
-SUBS = params.get("SUBS")
-WEBHOOK = params.get("WEBHOOK")
 
 
 def dur(f):
@@ -92,12 +88,10 @@ def upload_s3(name, filepath):
 
 
 def load_params():
-    logging.info("Loading params and downloading clips/audio/subs")
-    if not CLIPS or not AUDIO or not SUBS:
-        raise ValueError("One or more required URLs are missing!")
+    clips_url = params.get("clips")
 
-    logging.info(f"Downloading clips from {CLIPS}")
-    r = requests.get(CLIPS)
+    logging.info(f"Downloading {clips_url}")
+    r = requests.get(clips_url)
     r.raise_for_status()
     with open("clips.zip", "wb") as f:
         f.write(r.content)
@@ -108,7 +102,7 @@ def load_params():
     logging.info("Clips extracted")
 
     # Download audio and subtitles
-    for url, out in [(SUBS, "sub.txt"), (AUDIO, "audio.mp3")]:
+    for url, out in [(params.get("subs"), "sub.txt"), (params.get("audio"), "audio.mp3")]:
         logging.info(f"Downloading {out} from {url}")
         r = requests.get(url)
         r.raise_for_status()
@@ -119,7 +113,7 @@ def load_params():
 
 def notify(data):
     payload = {"status": "done", "data": data}
-    requests.post(WEBHOOK, json=payload)
+    requests.post(params.get('webhook'), json=payload)
     
     logging.info("Notification sent")
 
@@ -137,7 +131,7 @@ def run():
     concat_audio(concat_file, audio_file, sub_file, 'final.mp4')
     path = upload_s3('final.mp4', 'final.mp4')
     logging.info(f'output: {path}') 
-    
+
     notify(path)
     
     logging.info(f"Total time: {time.time() - start:.2f}s")
