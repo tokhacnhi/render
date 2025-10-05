@@ -20,7 +20,7 @@ jobs:
 
     outputs:
       webhook: ${{ steps.task.outputs.webhook }}  # map step output sang job output
-      render_data: ${{ steps.task.outputs.data }}
+      data: ${{ steps.task.outputs.data }}
 
     steps:
       - uses: actions/checkout@v5
@@ -50,9 +50,10 @@ jobs:
             fi
 
             WEBHOOK="${{ needs.render.outputs.webhook }}"
-            DATA="${{ needs.render.outputs.render_data }}"
+            DATA="${{ needs.render.outputs.data }}"
 
-            echo "WEBHOOK = ${{ needs.render.outputs.webhook }}"
+            echo "DATA = $DATA"
+            echo "WEBHOOK = $WEBHOOK"
 
             curl -X POST -H "Content-Type: application/json" \
               -d "{\"status\":\"$STATUS\",\"data\": \"$DATA\"}" \

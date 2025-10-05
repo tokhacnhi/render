@@ -146,7 +146,6 @@ def run():
     logging.info(f"Total time: {time.time() - start:.2f}s")
 
     return path
-    # notify(path)
     
 
 
