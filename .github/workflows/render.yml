@@ -36,7 +36,8 @@ jobs:
           
           RAW_DATA=$(python render.py)
           echo "RAW_DATA: $RAW_DATA"
-          DATA=$(echo "$RAW_DATA" | base64)
+          DATA=$(echo "$RAW_DATA" | base64 -w0)
+          
           echo "DATA: $DATA"
           echo "data=$DATA" >> $GITHUB_OUTPUT
 
