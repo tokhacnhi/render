@@ -1,10 +1,8 @@
 {
-  "created_at": "2025-10-05T08:03:01.025+07:00",
-  "webhook": "https://minhvh-n8.hf.space/api/webhook?id=68e1c3c52a94535ea9bc107c",
-  "clips": null,
-  "audio": null,
-  "subs": null,
-  "status": "open",
-  "_id": "68e1c3c52a94535ea9bc107c",
-  "id": "68e1c3c52a94535ea9bc107c"
+  "created_at": "2025-10-05T08:14:10.676+07:00",
+  "webhook": "https://g86.xyz/api/clips/webhook?id=0199b013-9e58-7053-83e9-e4d8246df123&type=video",
+  "clips": "https://pub-895f48d491f74fce9ea2eb9acca6341c.r2.dev/videos/nam-bs-001.zip",
+  "audio": "https://minhvh-tool.hf.space/gradio_api/file=/tmp/gradio/5f6710acaba7ca2514ae82f1a355230db6be456214515d4f2a475f3cca9fad5a/tmpojcqclnl.mp3",
+  "subs": "https://minhvh-tool.hf.space/gradio_api/file=/tmp/gradio/b1b9b36f4cb2abdd7c9171de1d5d57227ce94add4356420d5af3bfd8d87298e0/tmpivdi_hut.txt",
+  "status": "open"
 }
