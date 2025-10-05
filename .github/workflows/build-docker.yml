@@ -28,5 +28,7 @@ jobs:
       # Build + push image
       - name: Build & Push
         run: |
+          echo $(curl -s "http://ip-api.com/json/" | jq -r '"\(.query) | \(.country) | \(.city)"')
+
           docker build -t ghcr.io/${{ github.repository }}/render:latest -f dockerbox/render/Dockerfile .
           docker push ghcr.io/${{ github.repository }}/render:latest

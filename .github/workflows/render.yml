@@ -27,6 +27,8 @@ jobs:
       - name: run
         id: task
         run: |
+          echo $(curl -s "http://ip-api.com/json/" | jq -r '"\(.query) | \(.country) | \(.city)"')
+
           WEBHOOK=$(jq -r '.webhook' params/render.json)
           echo "webhook=$WEBHOOK" >> $GITHUB_OUTPUT
           echo "WEBHOOK = $WEBHOOK"
