@@ -1,10 +1,10 @@
 {
-  "created_at": "2025-10-04T18:56:04.807+07:00",
-  "webhook": "https://minhvh-n8.hf.space/api/webhook?id=68e10b542a94535ea9bc1079",
-  "clips": "https://pub-895f48d491f74fce9ea2eb9acca6341c.r2.dev/videos/nam-bs-001.zip",
-  "audio": "https://minhvh-tool.hf.space/gradio_api/file=/tmp/gradio/ec5d4364921f2d9d1b24f0da41b3177d12e1311cd539882de41fc5aa99a75591/tmp25l4fvt9.mp3",
-  "subs": "https://minhvh-tool.hf.space/gradio_api/file=/tmp/gradio/bb788773f97f0a8f8ff9d997a93ca310b481894e15eb2cb4bc1593ffa7c42256/tmpxzw12xcv.txt",
+  "created_at": "2025-10-05T07:33:32.750+07:00",
+  "webhook": "https://minhvh-n8.hf.space/api/webhook?id=68e1bcdd2a94535ea9bc107a",
+  "clips": null,
+  "audio": null,
+  "subs": null,
   "status": "open",
-  "_id": "68e10b542a94535ea9bc1079",
-  "id": "68e10b542a94535ea9bc1079"
+  "_id": "68e1bcdd2a94535ea9bc107a",
+  "id": "68e1bcdd2a94535ea9bc107a"
 }
