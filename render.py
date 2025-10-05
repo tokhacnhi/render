@@ -7,6 +7,7 @@ from zipfile import ZipFile
 import json
 import time
 import logging
+import fire
 
 logging.basicConfig(
     level=logging.DEBUG,  # DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -130,6 +131,9 @@ def load_params():
 
 
 def run():
+    get_ip()
+    load_params()
+
     start = time.time()
     audio_file = 'audio.mp3'
     sub_file = 'sub.txt'
@@ -150,6 +154,5 @@ def run():
 
 
 if __name__ == '__main__':
-    get_ip()
-    load_params()
-    run()
+    fire.Fire(run)
+    
