@@ -33,8 +33,10 @@ jobs:
           echo "webhook=$WEBHOOK" >> $GITHUB_OUTPUT
           echo "WEBHOOK = $WEBHOOK"
           
-          RAW_JSON=$(python render.py)
-          DATA=$(echo "$RAW_JSON" | base64)
+          RAW_DATA=$(python render.py)
+          echo "RAW_DATA: $RAW_DATA"
+          DATA=$(echo "$RAW_DATA" | base64)
+          echo "DATA: $DATA"
           echo "data=$DATA" >> $GITHUB_OUTPUT
 
   notify:
@@ -52,8 +54,8 @@ jobs:
             WEBHOOK="${{ needs.render.outputs.webhook }}"
             DATA="${{ needs.render.outputs.data }}"
 
-            echo "DATA = $DATA"
             echo "WEBHOOK = $WEBHOOK"
+            echo "$DATA" | base64 --decode
 
             curl -X POST -H "Content-Type: application/json" \
               -d "{\"status\":\"$STATUS\",\"data\": \"$DATA\"}" \
