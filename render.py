@@ -8,6 +8,7 @@ import json
 import time
 import logging
 import fire
+from urllib.parse import quote
 
 logging.basicConfig(
     level=logging.DEBUG,  # DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -149,7 +150,7 @@ def run():
 
     logging.info(f"Total time: {time.time() - start:.2f}s")
 
-    return path
+    return quote(path)
     
 
 

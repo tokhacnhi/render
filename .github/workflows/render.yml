@@ -32,13 +32,9 @@ jobs:
 
           WEBHOOK=$(jq -r '.webhook' params/render.json)
           RAW_DATA=$(python render.py)
-          DATA=$(echo "$RAW_DATA" | base64 -w0 | tr -d '\n')
           
           echo "webhook=$WEBHOOK" >> $GITHUB_OUTPUT
-          echo "data=$DATA" >> $GITHUB_OUTPUT
-
-      - name: Output
-        run: cat $GITHUB_OUTPUT
+          echo "data=$RAW_DATA" >> $GITHUB_OUTPUT
 
   notify:
       runs-on: ubuntu-latest
