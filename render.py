@@ -7,11 +7,9 @@ from zipfile import ZipFile
 import json
 import time
 import logging
-import fire
-from urllib.parse import quote
 
 logging.basicConfig(
-    level=logging.DEBUG,  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+    level=logging.INFO, # DEBUG, INFO, WARNING, ERROR, CRITICAL
     format='%(asctime)s [%(levelname)s] %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
@@ -54,9 +52,9 @@ def concat_video(vs: list[str], secs: float, dir: str, shuffle=True):
         random.shuffle(vs)
 
     vdur = sum(dur(v) for v in vs)
-    logging.debug(f"Total video duration: {vdur}")
+    logging.info(f"Total video duration: {vdur}")
     rep = math.ceil(secs / vdur)
-    logging.debug(f"Repeating videos {rep} times to reach target duration")
+    logging.info(f"Repeating videos {rep} times to reach target duration")
     vs = vs * rep
 
     output = f"{dir}/concat.mp4"
@@ -124,11 +122,11 @@ def load_params():
         logging.info(f"{out} downloaded")
 
 
-# def notify(data):
-#     payload = {"status": "done", "data": data}
-#     requests.post(params.get('webhook'), json=payload)
+def notify(data):
+    payload = {"status": "success", "data": data}
+    requests.post(params.get('webhook'), json=payload)
     
-#     logging.info("Notification sent")
+    logging.info("Notification sent")
 
 
 def run():
@@ -141,7 +139,7 @@ def run():
     dir = 'clips'
 
     files = [f"{dir}/{e}" for e in os.listdir(dir) if e.lower().endswith(".mp4")]
-    logging.debug(f"Video files: {files}")
+    logging.info(f"Video files: {files}")
 
     concat_file = concat_video(files, dur(audio_file), '.')
     concat_audio(concat_file, audio_file, sub_file, 'final.mp4')
@@ -150,10 +148,10 @@ def run():
 
     logging.info(f"Total time: {time.time() - start:.2f}s")
 
-    return quote(path)
+    notify(path)
     
 
 
 if __name__ == '__main__':
-    fire.Fire(run)
+    run()
     

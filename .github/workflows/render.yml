@@ -39,20 +39,12 @@ jobs:
   notify:
       runs-on: ubuntu-latest
       needs: render
-      if: always()
+      if: failure()
       steps:
         - name: Send webhook
           run: |
-            STATUS="success"
-            if [ "${{ needs.render.result }}" != "success" ]; then
-              STATUS="failure"
-            fi
-
-            WEBHOOK="${{ needs.render.outputs.webhook }}"
-            DATA="${{ needs.render.outputs.result }}"
-
             curl -X POST -H "Content-Type: application/json" \
-              -d "{\"status\":\"$STATUS\",\"data\": \"$DATA\"}" \
+              -d "{\"status\":\"fail\",\"data\": null}" \
               "$WEBHOOK"
             
 
