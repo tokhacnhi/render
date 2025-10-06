@@ -56,9 +56,6 @@ jobs:
             WEBHOOK="${{ needs.render.outputs.webhook }}"
             DATA="${{ needs.render.outputs.data }}"
 
-            echo "WEBHOOK = $WEBHOOK"
-            echo "$DATA" | base64 --decode
-
             curl -X POST -H "Content-Type: application/json" \
               -d "{\"status\":\"$STATUS\",\"data\": \"$DATA\"}" \
               "$WEBHOOK"
