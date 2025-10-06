@@ -8,6 +8,8 @@ import json
 import time
 import logging
 import base64
+import uuid
+
 
 logging.basicConfig(
     level=logging.INFO, # DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -90,14 +92,19 @@ def concat_audio(video_file, audio_file, sub_file, output):
     logging.info(f"Audio concatenation done: {output}")
 
 
-def upload_s3(name, filepath):
-    dm = 'https://minhvh-tool.hf.space/gradio_api'
-    files = {
-        "files": (name, open(filepath, "rb"))
-    }
-    r = requests.post(f'{dm}/upload', files=files)
+def upload_s3(filepath):
+    filename = f"{uuid.uuid4().hex}.mp4"
 
-    return f'{dm}/file={r.json()[0]}'
+    api = f"https://g86.xyz/api/upload?name={filename}"
+    r = requests.get(api)
+    r.raise_for_status()
+    upload_url = r.text.strip()  # chỉ trả về link
+
+    with open(filepath, "rb") as f:
+        put = requests.put(upload_url, data=f, headers={"Content-Type": "application/octet-stream"})
+        put.raise_for_status()
+
+    return f'https://s3.g86.xyz/{filename}'
 
 
 def load_params():
@@ -147,7 +154,7 @@ def run():
 
     concat_file = concat_video(files, dur(audio_file), '.')
     concat_audio(concat_file, audio_file, sub_file, 'final.mp4')
-    path = upload_s3('final.mp4', 'final.mp4')
+    path = upload_s3('final.mp4')
     logging.info(f'output: {path}') 
 
     logging.info(f"Total time: {time.time() - start:.2f}s")
