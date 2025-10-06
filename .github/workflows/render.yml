@@ -32,6 +32,7 @@ jobs:
 
           WEBHOOK=$(jq -r '.webhook' params/render.json)
           RAW_DATA=$(python render.py)
+          echo "RAW_DATA = $RAW_DATA"
           
           echo "webhook=$WEBHOOK" >> $GITHUB_OUTPUT
           echo "data=$RAW_DATA" >> $GITHUB_OUTPUT
