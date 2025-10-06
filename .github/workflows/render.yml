@@ -31,15 +31,14 @@ jobs:
           pip install fire
 
           WEBHOOK=$(jq -r '.webhook' params/render.json)
-          echo "webhook=$WEBHOOK" >> $GITHUB_OUTPUT
-          echo "WEBHOOK = $WEBHOOK"
-          
           RAW_DATA=$(python render.py)
-          echo "RAW_DATA: $RAW_DATA"
-          DATA=$(echo "$RAW_DATA" | base64 -w0)
+          DATA=$(echo "$RAW_DATA" | base64 -w0 | tr -d '\n')
           
-          echo "DATA: $DATA"
+          echo "webhook=$WEBHOOK" >> $GITHUB_OUTPUT
           echo "data=$DATA" >> $GITHUB_OUTPUT
+
+      - name: Output
+        run: cat $GITHUB_OUTPUT
 
   notify:
       runs-on: ubuntu-latest
