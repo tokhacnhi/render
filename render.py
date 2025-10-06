@@ -7,6 +7,7 @@ from zipfile import ZipFile
 import json
 import time
 import logging
+import base64
 
 logging.basicConfig(
     level=logging.INFO, # DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -121,8 +122,11 @@ def load_params():
             f.write(r.content)
         logging.info(f"{out} downloaded")
 
+def base64_encode(text):
+    return base64.b64encode(text.encode()).decode()
 
 def notify(data):
+    data = base64_encode(data)
     payload = {"status": "success", "data": data}
     requests.post(params.get('webhook'), json=payload)
     
@@ -147,7 +151,6 @@ def run():
     logging.info(f'output: {path}') 
 
     logging.info(f"Total time: {time.time() - start:.2f}s")
-
     notify(path)
     
 
