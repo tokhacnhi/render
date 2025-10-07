@@ -132,7 +132,6 @@ def base64_encode(text):
     return base64.b64encode(text.encode()).decode()
 
 def notify(data):
-    data = base64_encode(data)
     payload = {"status": "success", "data": data}
     requests.post(params.get('webhook'), json=payload)
     
