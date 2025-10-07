@@ -101,7 +101,7 @@ def upload_s3(filepath):
     upload_url = r.text.strip()
 
     with open(filepath, "rb") as f:
-        put = requests.put(upload_url, data=f)
+        put = requests.put(upload_url, data=f, headers={"Content-Type": "video/mp4"})
         put.raise_for_status()
 
     return f"https://minhvh-sss.hf.space/tmp/{key}"
