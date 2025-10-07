@@ -9,6 +9,7 @@ import time
 import logging
 import base64
 import uuid
+import secrets
 
 
 logging.basicConfig(
@@ -93,18 +94,16 @@ def concat_audio(video_file, audio_file, sub_file, output):
 
 
 def upload_s3(filepath):
-    filename = f"{uuid.uuid4().hex}.mp4"
-
-    api = f"https://g86.xyz/api/upload?name={filename}"
+    key = secrets.token_urlsafe(8)[:10] + '.mp4'
     r = requests.get(api)
     r.raise_for_status()
-    upload_url = r.text.strip()  # chỉ trả về link
+    upload_url = r.text.strip()
 
     with open(filepath, "rb") as f:
-        put = requests.put(upload_url, data=f, headers={"Content-Type": "application/octet-stream"})
+        put = requests.put(upload_url, data=f)
         put.raise_for_status()
 
-    return f'https://s3.g86.xyz/{filename}'
+    return f"https://minhvh-sss.hf.space/tmp/{key}"
 
 
 def load_params():
