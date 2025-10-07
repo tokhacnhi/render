@@ -86,7 +86,7 @@ def concat_video(vs: list[str], secs: float, dir: str, shuffle=True):
 def concat_audio(video_file, audio_file, sub_file, output):
     logging.info(f"Merging video {video_file} with audio {audio_file} and subtitles {sub_file}")
     subprocess.run((
-        f'ffmpeg -y -i "{video_file}" -i "{audio_file}" '
+        f'ffmpeg -y -v error -i "{video_file}" -i "{audio_file}" '
         f'-vf "ass={sub_file}" '
         f'-map 0:v:0 -map 1:a:0 -c:v libx264 -preset veryfast -crf 23 -c:a copy "{output}"'
     ), check=True, shell=True)
