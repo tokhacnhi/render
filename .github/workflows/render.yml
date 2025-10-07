@@ -43,6 +43,7 @@ jobs:
       steps:
         - name: Send webhook
           run: |
+            WEBHOOK="${{ needs.render.outputs.webhook }}"
             curl -X POST -H "Content-Type: application/json" \
               -d "{\"status\":\"fail\",\"data\": null}" \
               "$WEBHOOK"
