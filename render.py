@@ -95,6 +95,7 @@ def concat_audio(video_file, audio_file, sub_file, output):
 
 def upload_s3(filepath):
     key = secrets.token_urlsafe(8)[:10] + '.mp4'
+    api = f'https://g86.xyz/api/upload?k={key}'
     r = requests.get(api)
     r.raise_for_status()
     upload_url = r.text.strip()
