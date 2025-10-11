@@ -104,7 +104,7 @@ def upload_s3(filepath):
         put = requests.put(upload_url, data=f, headers={"Content-Type": "video/mp4"})
         put.raise_for_status()
 
-    return f"https://minhvh-sss.hf.space/tmp/{key}"
+    return f"http://s3.g86.xyz/{key}"
 
 
 def load_params():
